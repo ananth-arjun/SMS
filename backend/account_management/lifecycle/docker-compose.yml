@@ -1,0 +1,24 @@
+services:
+  account_management:
+    build:
+      context: ..
+      dockerfile: lifecycle/Dockerfile
+    container_name: account_management
+    env_file: [.env]
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PORT=${PORT:-8000}
+    volumes:
+      - ..:/app:rw              # mount the whole project for live-reload
+      # if you prefer just api, then ensure model/controller are inside the image
+    command: >
+      uvicorn api.profile:app
+      --host 0.0.0.0 --port ${PORT:-8000} --reload
+    ports:
+      - "${HOST_PORT:-8000}:${PORT:-8000}"
+    networks: [infra_net]
+    restart: unless-stopped
+
+networks:
+  infra_net:
+    external: true
