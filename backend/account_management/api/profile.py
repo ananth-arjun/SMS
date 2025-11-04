@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from controller.profile import ProfileController
+from model import user_schema
 app = FastAPI()
 
 @app.get("/my-profile")
@@ -22,7 +23,20 @@ def profile_list():
     
     return profile_list
 
-
 @app.post("/create-profile")
-def create_profile():
-    return {"message": "Profile created!"}
+def create_profile(profile_data: user_schema.UserCreate):
+    try:
+        response =  ProfileController().create_profile(profile_data)   # only pass the data
+        return {"message": response}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error creating profile: {str(e)}")
+    
+@app.get("/roles")
+def get_roles():
+    """
+    Get Request - Roles List
+    Returns:
+        _type_: _description_
+    """
+    roles = ProfileController().get_roles()
+    return roles
