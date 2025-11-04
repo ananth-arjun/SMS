@@ -79,11 +79,10 @@ class ProfileController:
                     role_id=profile_data.role_id,
                     assigned_on=datetime.now()
                 )
-                db_session.add(userRoles)
+                db_session.add(userRoles) 
                 db_session.commit()
                 db_session.refresh(user)
                 db_session.refresh(userRoles)
-                print("Created User:", user.id)
                 return response
         except Exception as e:
             db_session.rollback()
